@@ -40,9 +40,9 @@ public class Main {
         checkForPieces();      //Checks the on-screen board for pieces
         printChessBoard(chessboard);
         setUpOutPutWindow();
+        if(chessboard[0][0] == "BR"){
 
-
-        printChessBoard(oldChessboard);
+        }
         while(true){
             if(!Arrays.deepEquals(chessboard, oldChessboard)){
                 panel.repaint();
