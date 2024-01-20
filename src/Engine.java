@@ -10,6 +10,15 @@ public class Engine implements Runnable{
         for(Move curr: getAllMoves()){
             System.out.println(curr);
         }
+        for(Move mov: getAllMoves()){
+            chessboard[mov.getNewSquare().Y][mov.getNewSquare().X] = 1;
+        }
+        for (int[] ints : chessboard) {
+            for (int in: ints) {
+                System.out.print(in + "  ");
+            }
+            System.out.println();
+        }
     }
     public static void copyArrays(int[][] one, int[][] two){
         for(int i = 0; i < two.length; i++){
@@ -30,7 +39,7 @@ public class Engine implements Runnable{
                         totalMoves.addAll(new knight(j, i).getMoves(chessboard));
                         break;
                     case 350://white bishop
-                        //totalMoves.addAll(new bishop(j, i).getMoves(chessboard));
+                        totalMoves.addAll(new bishop(j, i).getMoves(chessboard));
                         break;
                     case 500://white rook
                         break;
