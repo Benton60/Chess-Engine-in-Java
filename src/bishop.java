@@ -45,7 +45,7 @@ public class bishop {
             }
             Move DL = new Move(new Coord(file, rank), new Coord(file - i, rank - i));
             if(DL.isLegal(chessboard) && dl){
-                moves.add(UR);
+                moves.add(DL);
                 if(DL.areNotSameColor(chessboard)){
                     dl = false;
                 }

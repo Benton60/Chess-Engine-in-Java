@@ -7,11 +7,9 @@ public class Engine implements Runnable{
     }
     @Override
     public void run() {
-        for(Move curr: getAllMoves()){
-            System.out.println(curr);
-        }
         for(Move mov: getAllMoves()){
             chessboard[mov.getNewSquare().Y][mov.getNewSquare().X] = 1;
+            System.out.println(mov);
         }
         for (int[] ints : chessboard) {
             for (int in: ints) {
