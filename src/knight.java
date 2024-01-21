@@ -3,10 +3,12 @@ import java.util.ArrayList;
 public class knight {
     private int rank;
     private int file;
+    public int color;
     private static final Coord[] possibleNewMoves = new Coord[8];
-    public knight(int f, int r){
+    public knight(int f, int r, int c){
         rank = r;
         file = f;
+        color = c;
         possibleNewMoves[0] = new Coord(file+1, rank+2);
         possibleNewMoves[1] = new Coord(file-1, rank+2);
         possibleNewMoves[2] = new Coord(file+2, rank+1);
@@ -21,10 +23,22 @@ public class knight {
 
         for(Coord currentCoord: possibleNewMoves){
             Move moveToCheck = new Move(new Coord(file, rank), currentCoord);
-            if(moveToCheck.isLegal(chessboard)){
+            if(moveToCheck.isLegal(chessboard, color)){
                 moves.add(moveToCheck);
             }
         }
         return moves;
     }
+    public ArrayList<Move> getPseudoMoves(int[][] chessboard){
+        ArrayList<Move> moves = new ArrayList<>();
+
+        for(Coord currentCoord: possibleNewMoves){
+            Move moveToCheck = new Move(new Coord(file, rank), currentCoord);
+            if(moveToCheck.isPseudoLegal(chessboard)){
+                moves.add(moveToCheck);
+            }
+        }
+        return moves;
+    }
+
 }

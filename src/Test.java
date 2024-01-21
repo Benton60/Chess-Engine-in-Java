@@ -1,6 +1,3 @@
-import java.util.*;
-
-
 public class Test
 {
     public static int[][] chessboard = /*{
@@ -18,16 +15,16 @@ public class Test
     {
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 350, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, -500, 0, -900, 0, 0},
+    {0, 0, 0, 0, 0, 900, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 10000, 0, 0, 0},
     };
 
     public static void main(String[] args) {
-        Engine eval = new Engine(chessboard);
+        Evaluation eval = new Evaluation(chessboard, 1);
         new Thread(eval).start();
     }
 }
