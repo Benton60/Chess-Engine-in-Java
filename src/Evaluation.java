@@ -11,10 +11,11 @@ public class Evaluation implements Runnable{
     }
     @Override
     public void run() {
-        ArrayList<Move> total = getAllMoves(col, last);
+        double time = System.nanoTime();
+        ArrayList<Move> total = getAllMoves(col, last, true, true);
         System.out.println(total.size() + " moves");
         for(Move mov: total){
-            chessboard[mov.getNewSquare().Y][mov.getNewSquare().X] = 1;
+            //chessboard[mov.getNewSquare().Y][mov.getNewSquare().X] = 1;
             System.out.println(mov);
         }
         for (int[] ints : chessboard) {
@@ -23,6 +24,7 @@ public class Evaluation implements Runnable{
             }
             System.out.println();
         }
+        System.out.println("time: " + (System.nanoTime()-time)/1000000000);
     }
     public static void copyArrays(int[][] one, int[][] two){
         for(int i = 0; i < two.length; i++){
@@ -31,7 +33,7 @@ public class Evaluation implements Runnable{
             }
         }
     }
-    public ArrayList<Move> getAllMoves(int c, Move lastMove){
+    public ArrayList<Move> getAllMoves(int c, Move lastMove, boolean canCastleL, boolean canCastleS){
         ArrayList<Move> totalMoves = new ArrayList<>();
         for (int i = 0; i < chessboard.length; i++) {
             for (int j = 0; j < chessboard[i].length; j++) {
@@ -54,6 +56,12 @@ public class Evaluation implements Runnable{
                             break;
                         case 10000://white king
                             totalMoves.addAll(new king(j, i, c).getMoves(chessboard));
+                            if(canCastleL){
+                                totalMoves.addAll(new king(j, i, c).castleMoves(chessboard,'l'));
+                            }
+                            if(canCastleS){
+                                totalMoves.addAll(new king(j, i, c).castleMoves(chessboard,'s'));
+                            }
                             break;
                         default:
                             break;

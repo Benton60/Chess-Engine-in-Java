@@ -1,9 +1,16 @@
 public class Move {
     private Coord oldCoord;
     private Coord newCoord;
+    private char castleSide = 'n';
+    private int color;
     public Move(Coord beginning, Coord ending){
         oldCoord = beginning;
         newCoord = ending;
+    }
+    public Move(){}
+    public Move(char side, int col){
+        castleSide = side;
+        color = col;
     }
     public boolean isLegal(int[][] chessboard, int color){
         if(newCoord.X > 7 || newCoord.X < 0 || newCoord.Y > 7 || newCoord.Y < 0){  // checks if the move falls outside the array aka board
@@ -47,6 +54,12 @@ public class Move {
         return newCoord;
     }
     public String toString(){
+        if(castleSide != 'n' && color == -1){
+            return "Black to the " + castleSide;
+        }
+        if(castleSide != 'n' && color == 1){
+            return "White to the " + castleSide;
+        }
         return oldCoord.toString() + " : " + newCoord.toString();
     }
     public boolean areNotSameColor(int[][] chessboard){
@@ -133,5 +146,35 @@ public class Move {
             return true;
         }
         return false;
+    }
+    public void makeMove(int[][] chessboard, int color){
+        if(color == 1 && castleSide == 'l'){
+            chessboard[7][3] = 500;
+            chessboard[7][0] = 0;
+            chessboard[7][2] = 10000;
+            chessboard[7][4] = 0;
+        }
+        if(color == 1 && castleSide == 's'){
+            chessboard[7][5] = 500;
+            chessboard[7][7] = 0;
+            chessboard[7][6] = 10000;
+            chessboard[7][4] = 0;
+        }
+        if(color == -1 && castleSide == 'l'){
+            chessboard[0][3] = 500;
+            chessboard[0][0] = 0;
+            chessboard[0][2] = 10000;
+            chessboard[0][4] = 0;
+        }
+        if(color == -1 && castleSide == 's'){
+            chessboard[0][5] = 500;
+            chessboard[0][7] = 0;
+            chessboard[0][6] = 10000;
+            chessboard[0][4] = 0;
+        }
+        if(castleSide == 'n'){
+            chessboard[newCoord.Y][oldCoord.X] = chessboard[oldCoord.Y][oldCoord.X];
+            chessboard[oldCoord.Y][oldCoord.X] = 0;
+        }
     }
 }

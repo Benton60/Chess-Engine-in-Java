@@ -41,4 +41,43 @@ public class king {
         }
         return moves;
     }
+    public ArrayList<Move> castleMoves(int[][] chessboard, char dir){
+        System.out.println("Here");
+        ArrayList<Move> moves = new ArrayList<>();
+        if(color == 1) {
+            if (dir == 'l' && chessboard[7][3] == 0 && chessboard[7][2] == 0 && chessboard[7][1] == 0){
+                if(!new Move().canKingBeCapturedAfterThisMove(new Move(new Coord(4,7), new Coord(3,7)),chessboard, color)){
+                    if(!new Move().canKingBeCapturedAfterThisMove(new Move(new Coord(4,7), new Coord(2,7)),chessboard, color)){
+
+                        moves.add(new Move('l', color));
+                    }
+                }
+            }
+            System.out.println(dir == 's' && chessboard[7][6] == 0 && chessboard[7][5] == 0);
+            if (dir == 's' && chessboard[7][6] == 0 && chessboard[7][5] == 0){
+                if(!new Move().canKingBeCapturedAfterThisMove(new Move(new Coord(4,7), new Coord(5,7)),chessboard, color)){
+                    if(!new Move().canKingBeCapturedAfterThisMove(new Move(new Coord(4,7), new Coord(6,7)),chessboard, color)){
+                        moves.add(new Move('s', color));
+                    }
+                }
+            }
+        }
+        if(color == -1) {
+            if (dir == 'l' && chessboard[0][3] == 0 && chessboard[0][2] == 0 && chessboard[0][1] == 0){
+                if(!new Move().canKingBeCapturedAfterThisMove(new Move(new Coord(4,0), new Coord(3,0)),chessboard, color)){
+                    if(!new Move().canKingBeCapturedAfterThisMove(new Move(new Coord(4,0), new Coord(2,0)),chessboard, color)){
+                        moves.add(new Move('l', color));
+                    }
+                }
+            }
+            if (dir == 's' && chessboard[0][6] == 0 && chessboard[0][5] == 0){
+                if(!new Move().canKingBeCapturedAfterThisMove(new Move(new Coord(4,0), new Coord(5,0)),chessboard, color)){
+                    if(!new Move().canKingBeCapturedAfterThisMove(new Move(new Coord(4,0), new Coord(6,0)),chessboard, color)){
+                        moves.add(new Move('s', color));
+                    }
+                }
+            }
+        }
+        return moves;
+    }
 }
