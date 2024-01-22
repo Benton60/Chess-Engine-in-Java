@@ -4,7 +4,6 @@ public class rook {
     private int rank;
     private int file;
     private int color;
-    ArrayList<Move> inBoundMoves = new ArrayList<>();
     public rook(int f, int r, int c){
         rank = r;
         file = f;
@@ -25,7 +24,9 @@ public class rook {
                     r = false;
                 }
             }else{
-                r = false;
+                if(R.outOrBlocked(chessboard)){
+                    r = false;
+                }
             }
             Move L = new Move(new Coord(file, rank), new Coord(file - i, rank));
             if(L.isLegal(chessboard, color) && l){
@@ -34,7 +35,9 @@ public class rook {
                     l = false;
                 }
             }else{
-                l = false;
+                if(L.outOrBlocked(chessboard)){
+                    l = false;
+                }
             }
             Move U = new Move(new Coord(file, rank), new Coord(file, rank + i));
             if(U.isLegal(chessboard, color) && u){
@@ -43,7 +46,9 @@ public class rook {
                     u = false;
                 }
             }else{
-                u = false;
+                if(R.outOrBlocked(chessboard)){
+                    u = false;
+                }
             }
             Move D = new Move(new Coord(file, rank), new Coord(file, rank - i));
             if(D.isLegal(chessboard, color) && d){
@@ -52,7 +57,9 @@ public class rook {
                     d = false;
                 }
             }else{
-                d = false;
+                if(D.outOrBlocked(chessboard)){
+                    d = false;
+                }
             }
         }
         return moves;

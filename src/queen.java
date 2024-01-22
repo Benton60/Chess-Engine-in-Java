@@ -22,6 +22,7 @@ public class queen {
         boolean u = true;
         boolean d = true;
         for(int i = 1; i < 8; i++){
+            //bishop moves
             Move UR = new Move(new Coord(file, rank), new Coord(file + i, rank + i));
             if(UR.isLegal(chessboard, color) && ur){
                 moves.add(UR);
@@ -29,7 +30,9 @@ public class queen {
                     ur = false;
                 }
             }else{
-                ur = false;
+                if(UR.outOrBlocked(chessboard)){
+                    ur = false;
+                }
             }
             Move DR = new Move(new Coord(file, rank), new Coord(file + i, rank - i));
             if(DR.isLegal(chessboard, color) && dr){
@@ -38,7 +41,9 @@ public class queen {
                     dr = false;
                 }
             }else{
-                dr = false;
+                if(DR.outOrBlocked(chessboard)){
+                    dr = false;
+                }
             }
             Move UL = new Move(new Coord(file, rank), new Coord(file - i, rank + i));
             if(UL.isLegal(chessboard, color) && ul){
@@ -47,7 +52,9 @@ public class queen {
                     ul = false;
                 }
             }else{
-                ul = false;
+                if(UL.outOrBlocked(chessboard)){
+                    ul = false;
+                }
             }
             Move DL = new Move(new Coord(file, rank), new Coord(file - i, rank - i));
             if(DL.isLegal(chessboard, color) && dl){
@@ -56,7 +63,9 @@ public class queen {
                     dl = false;
                 }
             }else{
-                dl = false;
+                if(DL.outOrBlocked(chessboard)){
+                    dl = false;
+                }
             }
 
 
@@ -69,7 +78,9 @@ public class queen {
                     r = false;
                 }
             }else{
-                r = false;
+                if(R.outOrBlocked(chessboard)){
+                    r = false;
+                }
             }
             Move L = new Move(new Coord(file, rank), new Coord(file - i, rank));
             if(L.isLegal(chessboard, color) && l){
@@ -78,7 +89,9 @@ public class queen {
                     l = false;
                 }
             }else{
-                l = false;
+                if(L.outOrBlocked(chessboard)){
+                    l = false;
+                }
             }
             Move U = new Move(new Coord(file, rank), new Coord(file, rank + i));
             if(U.isLegal(chessboard, color) && u){
@@ -87,7 +100,9 @@ public class queen {
                     u = false;
                 }
             }else{
-                u = false;
+                if(R.outOrBlocked(chessboard)){
+                    u = false;
+                }
             }
             Move D = new Move(new Coord(file, rank), new Coord(file, rank - i));
             if(D.isLegal(chessboard, color) && d){
@@ -96,7 +111,9 @@ public class queen {
                     d = false;
                 }
             }else{
-                d = false;
+                if(D.outOrBlocked(chessboard)){
+                    d = false;
+                }
             }
         }
         return moves;
@@ -112,6 +129,7 @@ public class queen {
         boolean u = true;
         boolean d = true;
         for(int i = 1; i < 8; i++){
+            //bishop moves
             Move UR = new Move(new Coord(file, rank), new Coord(file + i, rank + i));
             if(UR.isPseudoLegal(chessboard) && ur){
                 moves.add(UR);

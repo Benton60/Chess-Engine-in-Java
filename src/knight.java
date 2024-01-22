@@ -4,7 +4,7 @@ public class knight {
     private int rank;
     private int file;
     public int color;
-    private static final Coord[] possibleNewMoves = new Coord[8];
+    private final Coord[] possibleNewMoves = new Coord[8];
     public knight(int f, int r, int c){
         rank = r;
         file = f;

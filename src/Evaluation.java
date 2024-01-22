@@ -11,7 +11,7 @@ public class Evaluation implements Runnable{
     public void run() {
         for(Move mov: getAllMoves(col)){
             chessboard[mov.getNewSquare().Y][mov.getNewSquare().X] = 1;
-            //System.out.println(mov);
+            System.out.println(mov);
         }
         for (int[] ints : chessboard) {
             for (int in: ints) {
@@ -46,7 +46,7 @@ public class Evaluation implements Runnable{
                             totalMoves.addAll(new rook(j, i, c).getMoves(chessboard));
                             break;
                         case 900://white queen
-                            //totalMoves.addAll(new queen(j, i, c).getMoves(chessboard));
+                            totalMoves.addAll(new queen(j, i, c).getMoves(chessboard));
                             break;
                         case 10000://white king
                             totalMoves.addAll(new king(j,i,c).getMoves(chessboard));
@@ -54,7 +54,7 @@ public class Evaluation implements Runnable{
                         default:
                             break;
                     }
-                    System.out.println(i + " " + j);
+                    //System.out.println(i + " " + j);
                 }
             }
         }

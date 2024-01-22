@@ -20,11 +20,11 @@ public class king {
     }
     public ArrayList<Move> getMoves(int [][] chessboard){
         ArrayList<Move> moves = new ArrayList<>();
-        System.out.println("help");
+        //System.out.println("help");
         for(Coord checkMove: possibleMoves){
             Move move = new Move(new Coord(file, rank), checkMove);
             if(move.isLegal(chessboard, color)){
-                System.out.println(move);
+                //System.out.println(move);
                 moves.add(move);
             }
         }

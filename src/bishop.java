@@ -20,11 +20,14 @@ public class bishop {
             Move UR = new Move(new Coord(file, rank), new Coord(file + i, rank + i));
             if(UR.isLegal(chessboard, color) && ur){
                 moves.add(UR);
+                System.out.println(UR.outOrBlocked(chessboard));
                 if(UR.areNotSameColor(chessboard)){
                     ur = false;
                 }
             }else{
-                ur = false;
+                if(UR.outOrBlocked(chessboard)){
+                    ur = false;
+                }
             }
             Move DR = new Move(new Coord(file, rank), new Coord(file + i, rank - i));
             if(DR.isLegal(chessboard, color) && dr){
@@ -33,7 +36,9 @@ public class bishop {
                     dr = false;
                 }
             }else{
-                dr = false;
+                if(DR.outOrBlocked(chessboard)){
+                    dr = false;
+                }
             }
             Move UL = new Move(new Coord(file, rank), new Coord(file - i, rank + i));
             if(UL.isLegal(chessboard, color) && ul){
@@ -42,7 +47,10 @@ public class bishop {
                     ul = false;
                 }
             }else{
-                ul = false;
+                if(UL.outOrBlocked(chessboard)){
+                    ul = false;
+                }
+
             }
             Move DL = new Move(new Coord(file, rank), new Coord(file - i, rank - i));
             if(DL.isLegal(chessboard, color) && dl){
@@ -51,7 +59,9 @@ public class bishop {
                     dl = false;
                 }
             }else{
-                dl = false;
+                if(DL.outOrBlocked(chessboard)){
+                    dl = false;
+                }
             }
         }
         return moves;

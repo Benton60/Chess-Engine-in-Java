@@ -123,4 +123,15 @@ public class Move {
             }
         }
     }
+    public boolean outOrBlocked(int[][] chessboard){
+        if(newCoord.X > 7 || newCoord.X < 0 || newCoord.Y > 7 || newCoord.Y < 0){  // checks if the move falls outside the array aka board
+            //System.out.println("outside");
+            return true;
+        }
+        if(chessboard[newCoord.Y][newCoord.X] != 0){ // checks whether both pieces are white
+            //System.out.println("both are white");
+            return true;
+        }
+        return false;
+    }
 }
