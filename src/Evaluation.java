@@ -1,15 +1,19 @@
 import java.util.ArrayList;
 
 public class Evaluation implements Runnable{
-    private static final int[][] chessboard = new int[8][8];
-    public int col;
-    public Evaluation(int[][] board, int c){
+    private int[][] chessboard = new int[8][8];
+    private Move last;
+    public int col; // -1 represents black, 1 equals white
+    public Evaluation(int[][] board, int c, Move l){
         copyArrays(chessboard, board);
         col = c;
+        last = l;
     }
     @Override
     public void run() {
-        for(Move mov: getAllMoves(col)){
+        ArrayList<Move> total = getAllMoves(col, last);
+        System.out.println(total.size() + " moves");
+        for(Move mov: total){
             chessboard[mov.getNewSquare().Y][mov.getNewSquare().X] = 1;
             System.out.println(mov);
         }
@@ -27,14 +31,14 @@ public class Evaluation implements Runnable{
             }
         }
     }
-    public ArrayList<Move> getAllMoves(int c){
+    public ArrayList<Move> getAllMoves(int c, Move lastMove){
         ArrayList<Move> totalMoves = new ArrayList<>();
-        if(c == 1) {
-            for (int i = 0; i < chessboard.length; i++) {
-                for (int j = 0; j < chessboard[i].length; j++) {
+        for (int i = 0; i < chessboard.length; i++) {
+            for (int j = 0; j < chessboard[i].length; j++) {
+                if (c == 1) {
                     switch (chessboard[i][j]) {
                         case 100://white pawn
-
+                            totalMoves.addAll(new pawn(j, i, c).getMoves(chessboard, lastMove));
                             break;
                         case 300://white knight
                             totalMoves.addAll(new knight(j, i, c).getMoves(chessboard));
@@ -49,7 +53,32 @@ public class Evaluation implements Runnable{
                             totalMoves.addAll(new queen(j, i, c).getMoves(chessboard));
                             break;
                         case 10000://white king
-                            totalMoves.addAll(new king(j,i,c).getMoves(chessboard));
+                            totalMoves.addAll(new king(j, i, c).getMoves(chessboard));
+                            break;
+                        default:
+                            break;
+                    }
+                    //System.out.println(i + " " + j);
+                }
+                if(c == -1){
+                    switch (chessboard[i][j]) {
+                        case -100://white pawn
+                            totalMoves.addAll(new pawn(j, i, c).getMoves(chessboard, lastMove));
+                            break;
+                        case -300://white knight
+                            totalMoves.addAll(new knight(j, i, c).getMoves(chessboard));
+                            break;
+                        case -350://white bishop
+                            totalMoves.addAll(new bishop(j, i, c).getMoves(chessboard));
+                            break;
+                        case -500://white rook
+                            totalMoves.addAll(new rook(j, i, c).getMoves(chessboard));
+                            break;
+                        case -900://white queen
+                            totalMoves.addAll(new queen(j, i, c).getMoves(chessboard));
+                            break;
+                        case -10000://white king
+                            totalMoves.addAll(new king(j, i, c).getMoves(chessboard));
                             break;
                         default:
                             break;
