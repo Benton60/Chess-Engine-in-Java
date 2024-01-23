@@ -6,13 +6,17 @@ public class Position{
     public int col; // -1 represents black, 1 equals white
     private boolean canCastleL;
     private boolean canCastleS;
+    private boolean bcanCastleS;
+    private boolean bcanCastleL;
 
-    public Position(int[][] board, int c, Move l, boolean cl, boolean cs){
+    public Position(int[][] board, int c, Move l, boolean cl, boolean cs, boolean bcl, boolean bcs){
         copyArrays(chessboard, board);
         col = c;
         lastMove = l;
         canCastleL = cl;
         canCastleS = cs;
+        bcanCastleS = bcs;
+        bcanCastleL = bcl;
     }
 
     public void runThisPosition() {
@@ -92,10 +96,10 @@ public class Position{
                             break;
                         case -10000://white king
                             totalMoves.addAll(new king(j, i, col).getMoves(chessboard));
-                            if(canCastleL){
+                            if(bcanCastleL){
                                 totalMoves.addAll(new king(j, i, col).castleMoves(chessboard,'l'));
                             }
-                            if(canCastleS){
+                            if(bcanCastleS){
                                 totalMoves.addAll(new king(j, i, col).castleMoves(chessboard,'s'));
                             }
                             break;
@@ -138,7 +142,10 @@ public class Position{
         lastMove = move;
     }
     public Position clone(){
-        return new Position(chessboard, col, lastMove, canCastleL, canCastleS);
+        int[][] newBoard = new int[8][8];
+        copyArrays(newBoard, chessboard);
+        Move newMove = new Move(new Coord(lastMove.getOriginalSquare().X, lastMove.getOriginalSquare().Y), new Coord(lastMove.getNewSquare().X, lastMove.getNewSquare().Y));
+        return new Position(newBoard, col, newMove, canCastleL, canCastleS, bcanCastleL, bcanCastleS);
     }
     public void changeColor(){
         if(col == -1){

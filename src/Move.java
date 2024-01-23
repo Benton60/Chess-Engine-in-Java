@@ -1,16 +1,20 @@
 public class Move {
     private Coord oldCoord;
     private Coord newCoord;
-    private char castleSide = 'n';
-    private int color;
+    public char castleSide = 'n';
+    public int color;
     public Move(Coord beginning, Coord ending){
         oldCoord = beginning;
         newCoord = ending;
     }
-    public Move(){}
+    public Move(){
+        oldCoord = new Coord(0,0);
+        newCoord = new Coord(0,0);
+    }
     public Move(char side, int col){
         castleSide = side;
         color = col;
+
     }
     public boolean isLegal(int[][] chessboard, int color){
         if(newCoord.X > 7 || newCoord.X < 0 || newCoord.Y > 7 || newCoord.Y < 0){  // checks if the move falls outside the array aka board
@@ -92,12 +96,14 @@ public class Move {
         newChessBoard[move.getOriginalSquare().Y][move.getOriginalSquare().X] = 0;
         Coord kingPos = getKingPos(newChessBoard, color);
         try {
-            if (newChessBoard[kingPos.Y + color][kingPos.X + color] == 100 * color) {
+            if (newChessBoard[kingPos.Y - color][kingPos.X + color] == -100 * color) {
                 return true;
             }
-        }catch(Exception e){}
+        }catch(Exception e){
+            System.out.println(e);
+        }
         try {
-            if (newChessBoard[kingPos.Y + color][kingPos.X - color] == 100 * color) {
+            if (newChessBoard[kingPos.Y - color][kingPos.X - color] == -100 * color) {
                 return true;
             }
         }catch(Exception e){}
@@ -202,5 +208,13 @@ public class Move {
             chessboard[oldCoord.Y][oldCoord.X] = 0;
         }
         return ret;
+    }
+    public static void printChessBoard(int[][] board){
+        for (int[] strings : board) {
+            for (int string : strings) {
+                System.out.print(string + " ");
+            }
+            System.out.println();
+        }
     }
 }

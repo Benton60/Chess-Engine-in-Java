@@ -1,7 +1,5 @@
 public class Engine implements Runnable {
 
-    public boolean canCastleL;
-    public boolean canCastleS;
     private int time;
     private int depth = 0;
     Position masterPosition;
@@ -12,8 +10,25 @@ public class Engine implements Runnable {
     @Override
     public void run() {
         double time = System.nanoTime();
-        System.out.println(generatePositions(masterPosition, 2));
+        //System.out.println(generatePositions(masterPosition, 3));
+        Move move = getBestMove(masterPosition, 1);
+        System.out.println(move.toText());
+        mover mov = new mover(move);
+        new Thread(mov).start();
         System.out.println("Time: " + (System.nanoTime()-time)/1000000);
+    }
+    public Move getBestMove(Position pos, int depth){
+        Move best = null;
+        int eval = 0;
+        for(Move current:pos.getAllMoves()){
+            Position evenMoreCurrent = pos.clone();
+            evenMoreCurrent.makeMove(current);
+            evenMoreCurrent.changeColor();
+            if(evenMoreCurrent.getEval() > eval || best == null){
+                best = current;
+            }
+        }
+        return best;
     }
     public int generatePositions(Position pos, int depth){
         if(depth == 0){
@@ -21,13 +36,13 @@ public class Engine implements Runnable {
         }
         int numPositions = 0;
         Position current = pos.clone();
-        current.changeColor();
+        //current.changeColor();
         for(Move move: current.getAllMoves()){
             Position evenMoreCurrent = current.clone();
             evenMoreCurrent.makeMove(move);
             evenMoreCurrent.changeColor();
             numPositions += generatePositions(evenMoreCurrent, depth-1);
-            if(depth == 2){
+            if(depth ==4){
                 System.out.println(move.toText() + "   " + numPositions);
             }
         }

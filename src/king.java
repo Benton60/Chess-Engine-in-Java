@@ -20,13 +20,14 @@ public class king {
     }
     public ArrayList<Move> getMoves(int [][] chessboard){
         ArrayList<Move> moves = new ArrayList<>();
-        //System.out.println("help");
         for(Coord checkMove: possibleMoves){
             Move move = new Move(new Coord(file, rank), checkMove);
             if(move.isLegal(chessboard, color)){
-                //System.out.println(move);
                 moves.add(move);
             }
+        }
+        for(Move move: moves){
+            System.out.println(move.toText());
         }
         return moves;
     }
@@ -77,5 +78,13 @@ public class king {
             }
         }
         return moves;
+    }
+    public static void printChessBoard(int[][] board){
+        for (int[] strings : board) {
+            for (int string : strings) {
+                System.out.print(string + " ");
+            }
+            System.out.println();
+        }
     }
 }
