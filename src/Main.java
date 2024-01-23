@@ -41,7 +41,7 @@ public class Main {
         //printChessBoard(chessboard);
         setUpOutPutWindow();
         if(chessboard[0][0] == 500){
-            //Evaluation eval = new Evaluation(chessboard, canCastle, new Integer[]{100,100});
+            //Position eval = new Position(chessboard, canCastle, new Integer[]{100,100});
             //new Thread(eval).start();
             printChessBoard(chessboard);
         }
@@ -52,7 +52,7 @@ public class Main {
                 for(int i = 0; i < chessboard.length; i++){
                     for(int j = 0; j < chessboard[i].length; j++){
                         oldChessboard[i][j] = chessboard[i][j];
-                        //Evaluation eval = new Evaluation(chessboard, canCastle, new Integer[]{100,100});
+                        //Position eval = new Position(chessboard, canCastle, new Integer[]{100,100});
                         //new Thread(eval).start();
                     }
                 }

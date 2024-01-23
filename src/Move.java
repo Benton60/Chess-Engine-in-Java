@@ -62,6 +62,15 @@ public class Move {
         }
         return oldCoord.toString() + " : " + newCoord.toString();
     }
+    public String toText(){
+        if(castleSide != 'n' && color == -1){
+            return "Black to the " + castleSide;
+        }
+        if(castleSide != 'n' && color == 1){
+            return "White to the " + castleSide;
+        }
+        return oldCoord.toText() + ":" + newCoord.toText();
+    }
     public boolean areNotSameColor(int[][] chessboard){
         if(chessboard[newCoord.Y][newCoord.X] > 0 && chessboard[oldCoord.Y][oldCoord.X] > 0){ // checks whether both pieces are white
             //System.out.println("both are white");
@@ -147,7 +156,23 @@ public class Move {
         }
         return false;
     }
-    public void makeMove(int[][] chessboard, int color){
+    public String makeMove(int[][] chessboard){
+        String ret = "n";
+        if(oldCoord.X == 7 && oldCoord.Y == 7 || oldCoord.X == 7 && oldCoord.Y == 0){
+            ret = "s";
+        }
+        if(oldCoord.X == 0 && oldCoord.Y == 7 || oldCoord.X == 0 && oldCoord.Y == 0){
+            ret = "l";
+        }
+        if(newCoord.X == 7 && newCoord.Y == 7 || newCoord.X == 7 && newCoord.Y == 0){
+            ret = "s";
+        }
+        if(newCoord.X == 0 && newCoord.Y == 7 || newCoord.X == 0 && newCoord.Y == 0){
+            ret = "l";
+        }
+        if(oldCoord.X == 4 && oldCoord.Y == 7 || oldCoord.X == 4 && oldCoord.Y == 0){
+            ret = "b";
+        }
         if(color == 1 && castleSide == 'l'){
             chessboard[7][3] = 500;
             chessboard[7][0] = 0;
@@ -176,5 +201,6 @@ public class Move {
             chessboard[newCoord.Y][oldCoord.X] = chessboard[oldCoord.Y][oldCoord.X];
             chessboard[oldCoord.Y][oldCoord.X] = 0;
         }
+        return ret;
     }
 }

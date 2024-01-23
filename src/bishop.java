@@ -20,7 +20,7 @@ public class bishop {
             Move UR = new Move(new Coord(file, rank), new Coord(file + i, rank + i));
             if(UR.isLegal(chessboard, color) && ur){
                 moves.add(UR);
-                System.out.println(UR.outOrBlocked(chessboard));
+
                 if(UR.areNotSameColor(chessboard)){
                     ur = false;
                 }

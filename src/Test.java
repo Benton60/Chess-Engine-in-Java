@@ -1,16 +1,14 @@
 public class Test
 {
     public static int[][] chessboard = {
-
-            {-500, -300, -350, -900, -1000000, -350, -300, -500},
+            {-500, 0, -350, -900, -1000000, -350, -300, -500},
             {-100, -100, -100, -100, -100, -100, -100, -100},
-            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -300, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0},
             {100, 100, 100, 100, 100, 100, 100, 100},
-            {500, 300, 350, 900, 10000, 0, 0, 500}
-
+            {500, 300, 350, 900, 10000, 350, 300, 500}
     };
     /*
     {
@@ -19,13 +17,25 @@ public class Test
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
-    {100, -100, 100, 0, 0, 0, 0, 0},
+    {0, 0, 500, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
+
+
+    a7a5 = 420
+    a7a6 = 380
+    b7b5 = 421
+    b7b6 = 420
+    c7c5 = 441
+    c7c6 = 420
+
     };
-     */
+    */
+
     public static void main(String[] args) {
-        Evaluation eval = new Evaluation(chessboard, 1, new Move(new Coord(0, 0), new Coord(0, 0)));
-        new Thread(eval).start();
+        Move last = new Move(new Coord(0,0), new Coord(0,0));
+        Position master = new Position(chessboard, 1, last, true, true);
+        Engine engine = new Engine(master, 100);
+        engine.run();
     }
 }
