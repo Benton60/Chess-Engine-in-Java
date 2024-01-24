@@ -26,9 +26,6 @@ public class king {
                 moves.add(move);
             }
         }
-        for(Move move: moves){
-            System.out.println(move.toText());
-        }
         return moves;
     }
     public ArrayList<Move> getPseudoMoves(int [][] chessboard){

@@ -47,6 +47,7 @@ public class API implements Runnable {
     private static boolean canCastleL = true;
     private static boolean canCastleS = true;
     private static boolean areWhite = true;
+    private boolean ourTurn = false;
 
 
     public void run(){
@@ -59,6 +60,10 @@ public class API implements Runnable {
             int[][] inbetween = new int[8][8];
             flipCopy(inbetween, oldChessboard);
             copyArrays(oldChessboard, inbetween);
+            ourTurn = false;
+
+        }else{
+            ourTurn = true;
         }
         while(true){
             try{
@@ -72,13 +77,19 @@ public class API implements Runnable {
                 flipCopy(inbetween, chessboard);
                 copyArrays(chessboard, inbetween);
             }
-            if(!areEqual(oldChessboard, chessboard)){
+            if(ourTurn){
+                ourTurn = !ourTurn;
                 updateCastling(chessboard);
                 int[][] posBoard = new int[8][8];
                 copyArrays(posBoard, chessboard);
                 Position pos = new Position(posBoard,1, getLastMove(oldChessboard, chessboard), canCastleL, canCastleS, bCanCastleL, bCanCastleS);
                 Thread test1 = new Thread(new Engine(pos, 100));
                 test1.start();
+                copyArrays(oldChessboard, chessboard);
+            }else if(!areEqual(oldChessboard, chessboard)){
+                System.out.println("Not our Turn");
+                ourTurn = !ourTurn;
+                updateCastling(chessboard);
                 copyArrays(oldChessboard, chessboard);
             }
         }
@@ -162,8 +173,8 @@ public class API implements Runnable {
     }
     public static Move getLastMove(int[][] board, int[][] newBoard){
         ArrayList<Coord> changes = new ArrayList<>();
-        Coord endMove = null;
-        Coord startMove = null;
+        Coord endMove = new Coord(0,0);
+        Coord startMove = new Coord(0,0);
         for(int i = 0; i < board.length; i++){
             for(int j = 0; j < board.length; j++){
                 if(board[i][j]  != newBoard[i][j]){

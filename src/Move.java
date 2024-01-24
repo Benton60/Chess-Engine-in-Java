@@ -3,9 +3,15 @@ public class Move {
     private Coord newCoord;
     public char castleSide = 'n';
     public int color;
+    public boolean promotion = false;
     public Move(Coord beginning, Coord ending){
         oldCoord = beginning;
         newCoord = ending;
+    }
+    public Move(Coord beginning, Coord ending, boolean prom){
+        oldCoord = beginning;
+        newCoord = ending;
+        promotion = prom;
     }
     public Move(){
         oldCoord = new Coord(0,0);
@@ -100,7 +106,7 @@ public class Move {
                 return true;
             }
         }catch(Exception e){
-            System.out.println(e);
+            //System.out.println(e);
         }
         try {
             if (newChessBoard[kingPos.Y - color][kingPos.X - color] == -100 * color) {
@@ -164,6 +170,38 @@ public class Move {
     }
     public String makeMove(int[][] chessboard){
         String ret = "n";
+        if(promotion){
+            chessboard[newCoord.Y][oldCoord.X] = 900 * color;
+            return ret;
+        }
+        if(color == 1 && castleSide == 'l'){
+            chessboard[7][3] = 500;
+            chessboard[7][0] = 0;
+            chessboard[7][2] = 10000;
+            chessboard[7][4] = 0;
+            return ret;
+        }
+        if(color == 1 && castleSide == 's'){
+            chessboard[7][5] = 500;
+            chessboard[7][7] = 0;
+            chessboard[7][6] = 10000;
+            chessboard[7][4] = 0;
+            return ret;
+        }
+        if(color == -1 && castleSide == 'l'){
+            chessboard[0][3] = 500;
+            chessboard[0][0] = 0;
+            chessboard[0][2] = 10000;
+            chessboard[0][4] = 0;
+            return ret;
+        }
+        if(color == -1 && castleSide == 's'){
+            chessboard[0][5] = 500;
+            chessboard[0][7] = 0;
+            chessboard[0][6] = 10000;
+            chessboard[0][4] = 0;
+            return ret;
+        }
         if(oldCoord.X == 7 && oldCoord.Y == 7 || oldCoord.X == 7 && oldCoord.Y == 0){
             ret = "s";
         }
@@ -184,27 +222,31 @@ public class Move {
             chessboard[7][0] = 0;
             chessboard[7][2] = 10000;
             chessboard[7][4] = 0;
+            return ret;
         }
         if(color == 1 && castleSide == 's'){
             chessboard[7][5] = 500;
             chessboard[7][7] = 0;
             chessboard[7][6] = 10000;
             chessboard[7][4] = 0;
+            return ret;
         }
         if(color == -1 && castleSide == 'l'){
             chessboard[0][3] = 500;
             chessboard[0][0] = 0;
             chessboard[0][2] = 10000;
             chessboard[0][4] = 0;
+            return ret;
         }
         if(color == -1 && castleSide == 's'){
             chessboard[0][5] = 500;
             chessboard[0][7] = 0;
             chessboard[0][6] = 10000;
             chessboard[0][4] = 0;
+            return ret;
         }
         if(castleSide == 'n'){
-            chessboard[newCoord.Y][oldCoord.X] = chessboard[oldCoord.Y][oldCoord.X];
+            chessboard[newCoord.Y][newCoord.X] = chessboard[oldCoord.Y][oldCoord.X];
             chessboard[oldCoord.Y][oldCoord.X] = 0;
         }
         return ret;

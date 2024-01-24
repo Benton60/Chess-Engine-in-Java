@@ -49,7 +49,13 @@ public class Position{
                 if (col == 1) {
                     switch (chessboard[i][j]) {
                         case 100://white pawn
-                            totalMoves.addAll(new pawn(j, i, col).getMoves(chessboard, lastMove));
+                            ArrayList<Move> moves = new pawn(j, i, col).getMoves(chessboard, lastMove);
+                            for(int t = 0; t < moves.size(); t++){
+                                if(moves.get(t).getNewSquare().Y == 0){
+                                    moves.set(t, new Move(moves.get(t).getOriginalSquare(), moves.get(t).getNewSquare(), true));
+                                }
+                            }
+                            totalMoves.addAll(moves);
                             break;
                         case 300://white knight
                             totalMoves.addAll(new knight(j, i, col).getMoves(chessboard));
@@ -80,7 +86,13 @@ public class Position{
                 if(col == -1){
                     switch (chessboard[i][j]) {
                         case -100://white pawn
-                            totalMoves.addAll(new pawn(j, i, col).getMoves(chessboard, lastMove));
+                            ArrayList<Move> moves = new pawn(j, i, col).getMoves(chessboard, lastMove);
+                            for(int t = 0; t < moves.size(); t++){
+                                if(moves.get(t).getNewSquare().Y == 7){
+                                    moves.set(t, new Move(moves.get(t).getOriginalSquare(), moves.get(t).getNewSquare(), true));
+                                }
+                            }
+                            totalMoves.addAll(moves);
                             break;
                         case -300://white knight
                             totalMoves.addAll(new knight(j, i, col).getMoves(chessboard));
@@ -116,10 +128,10 @@ public class Position{
         double eval = 0;
         for(int i = 0; i < chessboard.length; i++){
             for(int j = 0; j < chessboard.length; j++){
-                eval += chessboard[i][j];
+                eval += chessboard[i][j]; // adds up all piece values
             }
         }
-        return eval;
+        return eval; //if the color is black it reverses the eval
     }
     public int[][] getBoard(){
         return chessboard;
@@ -153,5 +165,9 @@ public class Position{
         }else{
             col = -1;
         }
+    }
+    public boolean kingIsInCheck(){
+        Move move = new Move(new Coord(0,0), new Coord(0,0));
+        return move.canKingBeCapturedAfterThisMove(move,chessboard, col);
     }
 }
