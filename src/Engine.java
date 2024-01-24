@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Engine implements Runnable {
 
     private int time;
-    private int depth = 3;
+    private int depth = 4;
     Position masterPosition;
     public Engine(Position pos, int t){
         masterPosition = pos;
@@ -16,6 +16,9 @@ public class Engine implements Runnable {
         //System.out.println(Search(masterPosition, depth));
         Move move = getBestMove(masterPosition, depth);
         System.out.println(move.toText());
+        move.makeMove(masterPosition.getBoard());
+        printChessBoard(masterPosition.getBoard());
+
         mover mov = new mover(move);
         new Thread(mov).start();
         System.out.println("Time: " + (System.nanoTime()-time)/1000000);
@@ -29,6 +32,7 @@ public class Engine implements Runnable {
             Position temp = pos.clone();   // sets up a testing board to see if they are good moves
             move.makeMove(temp.getBoard()); // makes the moves on the testing board
             double eval = Search(temp, depth); // checks the eval for that line
+            System.out.println(move.toText() + "   " + eval);
             if(eval > bestEval){
                 bestMove = move; // if the eval is better than the current line choose this one
                 bestEval = eval;
@@ -45,21 +49,26 @@ public class Engine implements Runnable {
         ArrayList<Move> moves = pos.getAllMoves(); //get all the moves from the position
         if(moves.isEmpty()){                        //if there are no  moves and the king is in check then it is really bad aka checkmate
             if(pos.kingIsInCheck()){
-                return -100000000;
+                return -100000000* pos.col;
             }
             return 0;                              //if the king isn't in check then it is a stalemate or draw
         }
-        double bestEval = -100000000;
+        double bestEval = -100000000 * pos.col;
         for(Move move: moves){
             Position current = pos.clone();
             move.makeMove(current.getBoard());
-            current.changeColor();
             double eval = Search (current, depth - 1);
-            if(bestEval < eval){
-                bestEval = eval;
+            if(pos.col == -1){  //when it is blacks turn we need to get the lowest evaluation not the highest
+                if(bestEval > eval){
+                    bestEval = eval;
+                }
+            }else{                  // when it is whites turn we need to return the highest evaluation
+                if(bestEval < eval){
+                    bestEval = eval;
+                }
             }
-        }
 
+        }
         return bestEval;
     }
     public int generatePositions(Position pos, int depth){

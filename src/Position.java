@@ -131,7 +131,7 @@ public class Position{
                 eval += chessboard[i][j]; // adds up all piece values
             }
         }
-        return eval; //if the color is black it reverses the eval
+        return eval;
     }
     public int[][] getBoard(){
         return chessboard;
