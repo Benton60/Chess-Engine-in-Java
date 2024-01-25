@@ -69,6 +69,10 @@ public class mover implements Runnable{
                 robot.mouseMove(chess_Board_X_Value + end.X * 85, chess_Board_Y_Value + end.Y * 85);
                 robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                 robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                if(move.promotion){
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                }
                 //robot.mouseMove(150,850);
                 //this.wait(200);
             } catch (Exception e) {

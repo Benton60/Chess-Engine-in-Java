@@ -170,4 +170,92 @@ public class Position{
         Move move = new Move(new Coord(0,0), new Coord(0,0));
         return move.canKingBeCapturedAfterThisMove(move,chessboard, col);
     }
+    public ArrayList<Move> getAllCaptureMoves(){
+        ArrayList<Move> totalMoves = new ArrayList<>();
+        for (int i = 0; i < chessboard.length; i++) {
+            for (int j = 0; j < chessboard[i].length; j++) {
+                if (col == 1) {
+                    switch (chessboard[i][j]) {
+                        case 100://white pawn
+                            ArrayList<Move> moves = new pawn(j, i, col).getMoves(chessboard, lastMove);
+                            for(int t = 0; t < moves.size(); t++){
+                                if(moves.get(t).getNewSquare().Y == 0){
+                                    moves.set(t, new Move(moves.get(t).getOriginalSquare(), moves.get(t).getNewSquare(), true));
+                                }
+                            }
+                            totalMoves.addAll(moves);
+                            break;
+                        case 300://white knight
+                            totalMoves.addAll(new knight(j, i, col).getMoves(chessboard));
+                            break;
+                        case 350://white bishop
+                            totalMoves.addAll(new bishop(j, i, col).getMoves(chessboard));
+                            break;
+                        case 500://white rook
+                            totalMoves.addAll(new rook(j, i, col).getMoves(chessboard));
+                            break;
+                        case 900://white queen
+                            totalMoves.addAll(new queen(j, i, col).getMoves(chessboard));
+                            break;
+                        case 10000://white king
+                            totalMoves.addAll(new king(j, i, col).getMoves(chessboard));
+                            if(canCastleL){
+                                totalMoves.addAll(new king(j, i, col).castleMoves(chessboard,'l'));
+                            }
+                            if(canCastleS){
+                                totalMoves.addAll(new king(j, i, col).castleMoves(chessboard,'s'));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    //System.out.println(i + " " + j);
+                }
+                if(col == -1){
+                    switch (chessboard[i][j]) {
+                        case -100://white pawn
+                            ArrayList<Move> moves = new pawn(j, i, col).getMoves(chessboard, lastMove);
+                            for(int t = 0; t < moves.size(); t++){
+                                if(moves.get(t).getNewSquare().Y == 7){
+                                    moves.set(t, new Move(moves.get(t).getOriginalSquare(), moves.get(t).getNewSquare(), true));
+                                }
+                            }
+                            totalMoves.addAll(moves);
+                            break;
+                        case -300://white knight
+                            totalMoves.addAll(new knight(j, i, col).getMoves(chessboard));
+                            break;
+                        case -350://white bishop
+                            totalMoves.addAll(new bishop(j, i, col).getMoves(chessboard));
+                            break;
+                        case -500://white rook
+                            totalMoves.addAll(new rook(j, i, col).getMoves(chessboard));
+                            break;
+                        case -900://white queen
+                            totalMoves.addAll(new queen(j, i, col).getMoves(chessboard));
+                            break;
+                        case -10000://white king
+                            totalMoves.addAll(new king(j, i, col).getMoves(chessboard));
+                            if(bcanCastleL){
+                                totalMoves.addAll(new king(j, i, col).castleMoves(chessboard,'l'));
+                            }
+                            if(bcanCastleS){
+                                totalMoves.addAll(new king(j, i, col).castleMoves(chessboard,'s'));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    //System.out.println(i + " " + j);
+                }
+            }
+        }
+        ArrayList<Move> captures = new ArrayList<>();
+        for(Move move: totalMoves){
+            if(move.isCapture(chessboard)){
+                captures.add(move);
+            }
+        }
+        return captures;
+    }
 }

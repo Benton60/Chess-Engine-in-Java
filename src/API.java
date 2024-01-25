@@ -5,18 +5,9 @@ import javax.swing.*;
         import java.util.ArrayList;
         import java.util.Arrays;
         import java.util.HashMap;
+import java.util.Scanner;
 
 public class API implements Runnable {
-    public static int[][] startingChessboard = {
-            {-500, -300, -350, -900, -1000000, -350, -300, -500},
-            {-100, -100, -100, -100, -100, -100, -100, -100},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {100, 100, 100, 100, 100, 100, 100, 100},
-            {500, 300, 350, 900, 10000, 350, 300, 500}
-    };
     public static JFrame frame = new JFrame();
     public static JPanel panel = new JPanel() {
         @Override
@@ -47,52 +38,41 @@ public class API implements Runnable {
     private static boolean canCastleL = true;
     private static boolean canCastleS = true;
     private static boolean areWhite = true;
-    private boolean ourTurn = false;
 
 
     public void run(){
         addPiecePixelValues();
         setUpOutPutWindow();
+        Scanner scan = new Scanner(System.in);
+        scan.nextLine();
         checkForPieces(oldChessboard);
         if(oldChessboard[0][0] == 500){
             System.out.println("Black");
             areWhite = false;
-            int[][] inbetween = new int[8][8];
-            flipCopy(inbetween, oldChessboard);
-            copyArrays(oldChessboard, inbetween);
-            ourTurn = false;
-
-        }else{
-            ourTurn = true;
-        }
-        while(true){
-            try{
-                this.wait(200000);
-            }catch(Exception e){}
-            panel.repaint();
-            frame.repaint();
+            checkForPieces(oldChessboard);
             checkForPieces(chessboard);
-            if(!areWhite){
-                int[][] inbetween = new int[8][8];
-                flipCopy(inbetween, chessboard);
-                copyArrays(chessboard, inbetween);
+            while(true){
+                waitForUpdate();
+                startEngine();
+                waitForUpdate();
             }
-            if(ourTurn){
-                ourTurn = !ourTurn;
-                updateCastling(chessboard);
-                int[][] posBoard = new int[8][8];
-                copyArrays(posBoard, chessboard);
-                Position pos = new Position(posBoard,1, getLastMove(oldChessboard, chessboard), canCastleL, canCastleS, bCanCastleL, bCanCastleS);
-                Thread test1 = new Thread(new Engine(pos, 100));
-                test1.start();
-                copyArrays(oldChessboard, chessboard);
-            }else if(!areEqual(oldChessboard, chessboard)){
-                System.out.println("Not our Turn");
-                ourTurn = !ourTurn;
-                updateCastling(chessboard);
-                copyArrays(oldChessboard, chessboard);
+        }else{
+            System.out.println("White");
+            checkForPieces(oldChessboard);
+            checkForPieces(chessboard);
+            while(true) {
+                startEngine();
+                waitForUpdate();
+                waitForUpdate();
             }
         }
+
+    }
+    public void waitForUpdate(){
+        while(areEqual(oldChessboard, chessboard)){
+            checkForPieces(chessboard);
+        }
+        copyArrays(oldChessboard, chessboard);
     }
     public static void checkForPieces(int[][] board) {
         try {
@@ -133,6 +113,7 @@ public class API implements Runnable {
         }catch(Exception e){
             System.out.println(e);
         }
+        playingBlack(board);
     }
     public static void addPiecePixelValues(){
         pieceCorrelations.put(28, -500);//Black Rook
@@ -232,5 +213,22 @@ public class API implements Runnable {
                 board[i][j] = newBoard[i][j] * -1;
             }
         }
+    }
+    public static void startEngine(){
+        panel.repaint();
+        frame.repaint();
+        int[][] posBoard = new int[8][8];
+        copyArrays(posBoard, chessboard);
+        Position pos = new Position(posBoard,1, getLastMove(oldChessboard, chessboard), canCastleL, canCastleS, bCanCastleL, bCanCastleS);
+        Thread test1 = new Thread(new Engine(pos, 100));
+        test1.start();
+    }
+    public static void playingBlack(int[][] board){
+        if(!areWhite){
+            int[][] inbetween = new int[8][8];
+            flipCopy(inbetween, board);
+            copyArrays(board, inbetween);
+        }
+        updateCastling(board);
     }
 }

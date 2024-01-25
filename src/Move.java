@@ -251,6 +251,14 @@ public class Move {
         }
         return ret;
     }
+    public boolean isCapture(int[][] chessboard){
+        if(castleSide == 'n'){
+            if(chessboard[getNewSquare().Y][getNewSquare().X] != 0){
+                return true;
+            }
+        }
+        return false;
+    }
     public static void printChessBoard(int[][] board){
         for (int[] strings : board) {
             for (int string : strings) {
