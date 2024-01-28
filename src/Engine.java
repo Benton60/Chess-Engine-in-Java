@@ -1,9 +1,10 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Engine implements Runnable {
 
     private int time;
-    private int depth = 4;
+    private int totalDepth = 2;
     Position masterPosition;
     public Engine(Position pos, int t){
         masterPosition = pos;
@@ -14,7 +15,7 @@ public class Engine implements Runnable {
         double time = System.nanoTime();
         //System.out.println(generatePositions(masterPosition, 3));
         //System.out.println(Search(masterPosition, depth));
-        Move move = getBestMove(masterPosition, depth);
+        Move move = getBestMove(masterPosition, totalDepth);
         System.out.println(move.toText());
         move.makeMove(masterPosition.getBoard());
         printChessBoard(masterPosition.getBoard());
@@ -31,9 +32,12 @@ public class Engine implements Runnable {
         for(Move move: pos.getAllMoves()){ // looks at all whites possible moves
             Position temp = pos.clone();   // sets up a testing board to see if they are good moves
             move.makeMove(temp.getBoard()); // makes the moves on the testing board
-            pos.changeColor();
-            double eval = Search(temp, depth, 1000000000, -100000000); // checks the eval for that line
+            temp.changeColor();
+            double eval = Search(temp, depth, -10000000, 1000000, 0, 0); // checks the eval for that line
             System.out.println(move.toText() + "   " + eval);
+            if(checkLastPositions(temp)){// checks whether the position is contained in the recent positions array from the api class.
+                eval -= 250;
+            }
             if(eval > bestEval){
                 bestMove = move; // if the eval is better than the current line choose this one
                 bestEval = eval;
@@ -43,42 +47,7 @@ public class Engine implements Runnable {
         return bestMove;
     }
 
-    public double Search(Position pos, int depth, double bestPositionSoFarForWhite, double bestPositionSoFarForBlack) {
-        if (depth == 0) {
-            return pos.getEval() ; // if we are done evaluating just check the positional eval
-        }
-        ArrayList<Move> moves = pos.getAllMoves(); //get all the moves from the position
-        if (moves.isEmpty()) {                        //if there are no  moves and the king is in check then it is really bad aka checkmate
-            if (pos.kingIsInCheck()) {
-                return -100000000;
-            }
-            return 0;                              //if the king isn't in check then it is a stalemate or draw
-        }
-        double bestEval = -100000000* pos.col;
-        for(Move move: moves){
-            Position current = pos.clone();
-            current.makeMove(move);
-            current.changeColor();
-            double evaluation = Search(current, depth-1, bestPositionSoFarForWhite, bestPositionSoFarForBlack);
-            if(current.col == 1 && bestPositionSoFarForWhite < evaluation){
-                return evaluation;
-            }else{
-                bestPositionSoFarForWhite = evaluation;
-            }
-            if(current.col == -1 && bestPositionSoFarForBlack > evaluation){
-                return evaluation;
-            }else{
-                bestPositionSoFarForBlack = evaluation;
-            }
-            if(current.col == -1 && evaluation > bestEval){
-                bestEval = evaluation;
-            }
-            if(current.col == 1 && evaluation < bestEval){
-                bestEval = evaluation;
-            }
-        }
-        return bestEval;
-    }
+
     public int generatePositions(Position pos, int depth){
         if(depth == 0){
             return 1;
@@ -105,33 +74,89 @@ public class Engine implements Runnable {
             System.out.println();
         }
     }
-    public static double SearchAllCaptures(Position pos, double bestPositionSoFarForWhite, double bestPositionSoFarForBlack, int count){
-        ArrayList<Move> moves = pos.getAllCaptureMoves(); //get all the moves from the position
-        if(moves.isEmpty() || count == 5){
-            return pos.getEval();
+    public static boolean checkLastPositions(Position pos){
+        for(Position current: API.lastPositions){
+            if(areEqual(current.getBoard(), pos.getBoard())){
+                return true;
+            }
         }
-        double bestEval = -100000000* pos.col;
-        for(Move move: moves){
+        return false;
+    }
+    public double Search(Position pos, int depth, double alphaW, double alphaB, double betaW, double betaB) {
+        if (depth == 0) {
+            double eval = pos.getEval();
+            if(pos.getNumPieces() < 12) {
+                return SearchAllCaptures(pos, 5); //SearchAllCaptures(pos, bestPositionSoFarForWhite, bestPositionSoFarForBlack, 0) ; // if we are done evaluating just check the positional eval
+            }
+            return eval;
+        }
+
+        ArrayList<Move> moves = pos.getAllMoves(); //get all the moves from the position
+
+        if (moves.isEmpty()) {                        //if there are no  moves and the king is in check then it is really bad aka checkmate
+            if (pos.kingIsInCheck()) {
+                int multiplier = 9-(totalDepth-depth);
+                return -1000000*pos.col*multiplier;
+            }
+            return pos.getEval();                              //if the king isn't in check then it is a stalemate or draw
+        }
+        double bestEval = -1000000 * pos.col;
+        for (Move move : moves) {
             Position current = pos.clone();
             current.makeMove(move);
             current.changeColor();
-            double evaluation = SearchAllCaptures(current, bestPositionSoFarForWhite, bestPositionSoFarForBlack, count+1);
-            if(current.col == 1 && bestPositionSoFarForWhite < evaluation){
-                return evaluation;
-            }else{
-                bestPositionSoFarForWhite = evaluation;
-            }
-            if(current.col == -1 && bestPositionSoFarForBlack > evaluation){
-                return evaluation;
-            }else{
-                bestPositionSoFarForBlack = evaluation;
-            }
-            if(current.col == -1 && evaluation > bestEval){
+            double evaluation = Search(current, depth - 1, betaW, betaB, alphaW, alphaB);
+            if (pos.col == -1 && evaluation < bestEval) {
                 bestEval = evaluation;
             }
-            if(current.col == 1 && evaluation < bestEval){
+            if (pos.col == 1 && evaluation > bestEval) {
                 bestEval = evaluation;
             }
+            if(pos.col == 1 && bestEval >= alphaB){
+                return bestEval;
+            }
+            if(pos.col == 1 && bestEval <= alphaW){
+                return bestEval;
+            }
+        }
+        return bestEval;
+    }
+    public static boolean areEqual(int[][] b, int[][] a){
+        for(int i = 0; i < a.length; i++){
+            for(int j = 0; j < a.length; j++) {
+                if (a[i][j] != b[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public double SearchAllCaptures(Position pos, int depth) {
+        if (depth == 0) {
+
+            return pos.getEval(); // if we are done evaluating just check the positional eval
+        }
+        ArrayList<Move> moves = pos.getAllCaptureMoves(); //get all the moves from the position
+        if (moves.isEmpty()) {                        //if there are no  moves and the king is in check then it is really bad aka checkmate
+            if (pos.kingIsInCheck()) {
+                int multiplier = 9-(totalDepth-depth);
+                return -1000000*pos.col*multiplier;
+            }
+            return pos.getEval();
+        }
+        double bestEval = -1000000 * pos.col;
+        for (Move move : moves) {
+            Position current = pos.clone();
+            current.makeMove(move);
+            current.changeColor();
+            double evaluation = SearchAllCaptures(current, depth - 1);
+            if (pos.col == -1 && evaluation < bestEval) {
+                bestEval = evaluation;
+            }
+            if (pos.col == 1 && evaluation > bestEval) {
+                bestEval = evaluation;
+            }
+
         }
         return bestEval;
     }

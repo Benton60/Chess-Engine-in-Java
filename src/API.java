@@ -38,6 +38,7 @@ public class API implements Runnable {
     private static boolean canCastleL = true;
     private static boolean canCastleS = true;
     private static boolean areWhite = true;
+    public static Position[] lastPositions = new Position[5];
 
 
     public void run(){
@@ -129,6 +130,11 @@ public class API implements Runnable {
         pieceCorrelations.put(50, 10000);//White King
         pieceCorrelations.put(19, 100);//White Pawn
         pieceCorrelations.put(0, 0); //This is for empty squares, so they don't say 'null' when the array is printed. Cuz that's annoying
+        lastPositions[0] = new Position();
+        lastPositions[1] = new Position();
+        lastPositions[2] = new Position();
+        lastPositions[3] = new Position();
+        lastPositions[4] = new Position();
     }
     public static void setUpOutPutWindow(){
         JFrame frame = new JFrame();
@@ -222,6 +228,10 @@ public class API implements Runnable {
         Position pos = new Position(posBoard,1, getLastMove(oldChessboard, chessboard), canCastleL, canCastleS, bCanCastleL, bCanCastleS);
         Thread test1 = new Thread(new Engine(pos, 100));
         test1.start();
+        for(int i = 1; i < lastPositions.length; i++){
+            lastPositions[i-1] = lastPositions[i];
+        }
+        lastPositions[4] = pos;
     }
     public static void playingBlack(int[][] board){
         if(!areWhite){

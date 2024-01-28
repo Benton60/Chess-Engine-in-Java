@@ -20,7 +20,8 @@ public class Move {
     public Move(char side, int col){
         castleSide = side;
         color = col;
-
+        oldCoord = new Coord(0,0);
+        newCoord = new Coord(0,0);
     }
     public boolean isLegal(int[][] chessboard, int color){
         if(newCoord.X > 7 || newCoord.X < 0 || newCoord.Y > 7 || newCoord.Y < 0){  // checks if the move falls outside the array aka board
@@ -267,4 +268,8 @@ public class Move {
             System.out.println();
         }
     }
+    public Move clone(){
+        return new Move(new Coord(getOriginalSquare().X, getOriginalSquare().Y), new Coord(getNewSquare().X, getNewSquare().Y));
+    }
+
 }

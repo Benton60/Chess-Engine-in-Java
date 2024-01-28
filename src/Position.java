@@ -8,6 +8,14 @@ public class Position{
     private boolean canCastleS;
     private boolean bcanCastleS;
     private boolean bcanCastleL;
+    public Position(){
+        for(int i = 0; i < chessboard.length; i++){
+            for(int j = 0; j < chessboard.length; j++){
+                chessboard[i][j] = 0;
+            }
+        }
+        lastMove = new Move(new Coord(0,0), new Coord(0,0));
+    }
 
     public Position(int[][] board, int c, Move l, boolean cl, boolean cs, boolean bcl, boolean bcs){
         copyArrays(chessboard, board);
@@ -151,7 +159,7 @@ public class Position{
             default:
                 break;
         }
-        lastMove = move;
+        lastMove = move.clone();
     }
     public Position clone(){
         int[][] newBoard = new int[8][8];
@@ -257,5 +265,16 @@ public class Position{
             }
         }
         return captures;
+    }
+    public int getNumPieces(){
+        int count = 0;
+        for(int[] arr: chessboard){
+            for(int in: arr){
+                if(in != 0){
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }
