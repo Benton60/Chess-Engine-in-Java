@@ -4,7 +4,7 @@ import java.util.Arrays;
 public class Engine implements Runnable {
 
     private int time;
-    private int totalDepth = 2;
+    private int totalDepth = 3;
     Position masterPosition;
     public Engine(Position pos, int t){
         masterPosition = pos;
@@ -112,12 +112,20 @@ public class Engine implements Runnable {
             if (pos.col == 1 && evaluation > bestEval) {
                 bestEval = evaluation;
             }
+            /*
             if(pos.col == 1 && bestEval >= alphaB){
                 return bestEval;
+            }
+            if(pos.col == 1 && bestEval <= alphaB){
+            betaB = bestEval;
             }
             if(pos.col == 1 && bestEval <= alphaW){
                 return bestEval;
             }
+            if(pos.col == 1 && bestEval >= alphaW){
+            betaW = bestEval;
+            }
+             */
         }
         return bestEval;
     }

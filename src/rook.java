@@ -56,10 +56,9 @@ public class rook {
                 if(D.areNotSameColor(chessboard)){
                     d = false;
                 }
-            }else{
-                if(D.outOrBlocked(chessboard)){
-                    d = false;
-                }
+            }
+            if(D.outOrBlocked(chessboard)) {
+                d = false;
             }
         }
         return moves;
