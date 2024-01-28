@@ -23,10 +23,9 @@ public class rook {
                 if(R.areNotSameColor(chessboard)){
                     r = false;
                 }
-            }else{
-                if(R.outOrBlocked(chessboard)){
-                    r = false;
-                }
+            }
+            if(R.outOrBlocked(chessboard)){
+                r = false;
             }
             Move L = new Move(new Coord(file, rank), new Coord(file - i, rank));
             if(L.isLegal(chessboard, color) && l){
@@ -34,10 +33,9 @@ public class rook {
                 if(L.areNotSameColor(chessboard)){
                     l = false;
                 }
-            }else{
-                if(L.outOrBlocked(chessboard)){
-                    l = false;
-                }
+            }
+            if(L.outOrBlocked(chessboard)){
+                l = false;
             }
             Move U = new Move(new Coord(file, rank), new Coord(file, rank + i));
             if(U.isLegal(chessboard, color) && u){
@@ -45,10 +43,9 @@ public class rook {
                 if(U.areNotSameColor(chessboard)){
                     u = false;
                 }
-            }else{
-                if(R.outOrBlocked(chessboard)){
-                    u = false;
-                }
+            }
+            if(R.outOrBlocked(chessboard)){
+                u = false;
             }
             Move D = new Move(new Coord(file, rank), new Coord(file, rank - i));
             if(D.isLegal(chessboard, color) && d){
