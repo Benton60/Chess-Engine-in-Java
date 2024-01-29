@@ -172,7 +172,7 @@ public class Move {
     public String makeMove(int[][] chessboard){
         String ret = "n";
         if(promotion){
-            chessboard[newCoord.Y][oldCoord.X] = 900 * color;
+            chessboard[newCoord.Y][oldCoord.X] = 900 * -color;
             return ret;
         }
         if(color == 1 && castleSide == 'l'){
