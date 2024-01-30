@@ -120,17 +120,12 @@ public class Move {
             }
         }
         for(Move current: new bishop(kingPos.X, kingPos.Y, color).getPseudoMoves(newChessBoard)){
-            if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -350*color){
+            if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -350*color || newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -900*color){
                 return true;
             }
         }
         for(Move current: new rook(kingPos.X, kingPos.Y, color).getPseudoMoves(newChessBoard)){
-            if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -500*color){
-                return true;
-            }
-        }
-        for(Move current: new queen(kingPos.X, kingPos.Y, color).getPseudoMoves(newChessBoard)){
-            if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -900*color){
+            if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -500*color || newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -900*color){
                 return true;
             }
         }
