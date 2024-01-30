@@ -33,7 +33,7 @@ public class Engine implements Runnable {
             Position temp = pos.clone();   // sets up a testing board to see if they are good moves
             move.makeMove(temp.getBoard()); // makes the moves on the testing board
             temp.changeColor();
-            double eval = Search(temp, depth, bestEval, 1000000, -1000000, 1000000); // checks the eval for that line
+            double eval = Search(temp, depth, bestEval, bestEval, -1000000, 1000000); // checks the eval for that line
             System.out.println(move.toText() + "   " + eval);
             if(checkLastPositions(temp)){// checks whether the position is contained in the recent positions array from the api class.
                 eval -= 250;
@@ -86,11 +86,10 @@ public class Engine implements Runnable {
     public double Search(Position pos, int depth, double alphaW, double alphaB, double betaW, double betaB) {
         ArrayList<Move> moves = pos.getAllMoves(); //get all the moves from the position
         if (depth == 0) {
-            if((pos.getNumPieces() < 12 && moves.size() <= 20) && pos.col == 1) {
-                System.out.println("yup");
+            if(pos.getNumPieces() < 12 && moves.size() <= 20 && pos.col == 1) {
                 return SearchAllCaptures(pos, 3, alphaW, alphaB, betaW, betaB); // if we are done evaluating just check the positional eval
             }
-            return SearchAllCaptures(pos, 1, alphaW, alphaB, betaW, betaB);
+            return SearchAllCaptures(pos, 0, alphaW, alphaB, betaW, betaB);
         }
 
         if (moves.isEmpty()) {                        //if there are no  moves and the king is in check then it is really bad aka checkmate
@@ -100,11 +99,13 @@ public class Engine implements Runnable {
             }
             return 0;                              //if the king isn't in check then it is a stalemate or draw
         }
+        sortMoves(moves, pos.getBoard());
         for (Move move : moves) {
             Position current = pos.clone();
             current.makeMove(move);
             current.changeColor();
             double evaluation = Search(current, depth - 1, betaW, betaB, alphaW, alphaB);
+            evaluation = evaluation + applyPostBiases(move, pos.col)/totalDepth*depth; //this applies the biases more the closer the position is to being played
             if(current.col == -1 && evaluation >= alphaB){ // if we are evaluating as black two positions back is black, so we are trying to find the lowest evaluation
                 return evaluation;
             }
@@ -148,7 +149,6 @@ public class Engine implements Runnable {
             }
             return pos.getEval();                              //if the king isn't in check then it is a stalemate or draw
         }
-        System.out.println("check: " + moves.size());
         for (Move move : moves) {
             Position current = pos.clone();
             current.makeMove(move);
@@ -177,5 +177,24 @@ public class Engine implements Runnable {
     public void sort(ArrayList<Move> moves, Position pos){
         int[][] chessboard = pos.getBoard();
 
+    }
+    public static double applyPostBiases(Move move, int color){
+        double eval = 0;
+        if(move.promotion){
+            eval = eval + 900 * color;
+        }
+        if(move.castleSide != 'n'){
+            System.out.println("Castling");
+            eval = eval + 500 * color;
+        }
+        return eval;
+    }
+    public static void sortMoves(ArrayList<Move> moves, int[][] board){
+        for(int i = 0; i < moves.size(); i++){
+            if(board[moves.get(i).getNewSquare().Y][moves.get(i).getNewSquare().X] != 0){
+                moves.add(0, moves.get(i));
+                moves.remove(i+1);
+            }
+        }
     }
 }
