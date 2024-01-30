@@ -4,8 +4,9 @@ import java.util.Arrays;
 public class Engine implements Runnable {
 
     private int time;
-    private int totalDepth = 3;
+    private int totalDepth = 5;
     Position masterPosition;
+    public static int snipped = 0;
     public Engine(Position pos, int t){
         masterPosition = pos;
         time = t;
@@ -44,6 +45,7 @@ public class Engine implements Runnable {
             }
         }
         System.out.println(bestEval);
+        System.out.println("Snipped: " + snipped);
         return bestMove;
     }
     public int generatePositions(Position pos, int depth){
@@ -105,11 +107,13 @@ public class Engine implements Runnable {
             current.makeMove(move);
             current.changeColor();
             double evaluation = Search(current, depth - 1, betaW, betaB, alphaW, alphaB);
-            evaluation = evaluation + applyPostBiases(move, pos.col)/totalDepth*depth; //this applies the biases more the closer the position is to being played
+            //evaluation = evaluation + applyPostBiases(move, pos.col); //this applies the biases more the closer the position is to being played
             if(current.col == -1 && evaluation >= alphaB){ // if we are evaluating as black two positions back is black, so we are trying to find the lowest evaluation
+                snipped++;
                 return evaluation;
             }
             if(current.col == 1 && evaluation <= alphaW){ // if we are evaluating as white then two positions back is also white, so we are trying to find the lowest evaluation
+                snipped++;
                 return evaluation;
             }
             if(pos.col == -1 && evaluation < betaB){  // this keeps track of the best position for black
@@ -174,17 +178,13 @@ public class Engine implements Runnable {
             return betaW;
         }
     }
-    public void sort(ArrayList<Move> moves, Position pos){
-        int[][] chessboard = pos.getBoard();
-
-    }
     public static double applyPostBiases(Move move, int color){
         double eval = 0;
         if(move.promotion){
             eval = eval + 900 * color;
         }
         if(move.castleSide != 'n'){
-            System.out.println("Castling");
+            //System.out.println("Castling");
             eval = eval + 500 * color;
         }
         return eval;
@@ -192,6 +192,10 @@ public class Engine implements Runnable {
     public static void sortMoves(ArrayList<Move> moves, int[][] board){
         for(int i = 0; i < moves.size(); i++){
             if(board[moves.get(i).getNewSquare().Y][moves.get(i).getNewSquare().X] != 0){
+                moves.add(0, moves.get(i));
+                moves.remove(i+1);
+            }
+            if(Math.abs(board[moves.get(i).getOriginalSquare().Y][moves.get(i).getOriginalSquare().X]) < Math.abs(board[moves.get(i).getNewSquare().Y][moves.get(i).getNewSquare().X])){
                 moves.add(0, moves.get(i));
                 moves.remove(i+1);
             }
