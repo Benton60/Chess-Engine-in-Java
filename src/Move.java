@@ -28,15 +28,11 @@ public class Move {
             //System.out.println("outside");
             return false;
         }
-        if(chessboard[newCoord.Y][newCoord.X] > 0 && chessboard[oldCoord.Y][oldCoord.X] > 0){ // checks whether both pieces are white
+        if((chessboard[newCoord.Y][newCoord.X] > 0 && chessboard[oldCoord.Y][oldCoord.X] > 0) || (chessboard[newCoord.Y][newCoord.X] < 0 && chessboard[oldCoord.Y][oldCoord.X] < 0)){ // checks whether both pieces are white
             //System.out.println("both are white");
             return false;
         }
-        if(chessboard[newCoord.Y][newCoord.X] < 0 && chessboard[oldCoord.Y][oldCoord.X] < 0){ // checks whether both pieces are black
-            //System.out.println("both are black");
-            return false;
-        }
-        if(canKingBeCapturedAfterThisMove(this, chessboard, color)){
+        if(canKingBeCapturedAfterThisMove(chessboard, color)){
             return false;
         }
 
@@ -47,15 +43,10 @@ public class Move {
             //System.out.println("outside");
             return false;
         }
-        if(chessboard[newCoord.Y][newCoord.X] > 0 && chessboard[oldCoord.Y][oldCoord.X] > 0){ // checks whether both pieces are white
+        if((chessboard[newCoord.Y][newCoord.X] > 0 && chessboard[oldCoord.Y][oldCoord.X] > 0) || (chessboard[newCoord.Y][newCoord.X] < 0 && chessboard[oldCoord.Y][oldCoord.X] < 0)){ // checks whether both pieces are white
             //System.out.println("both are white");
             return false;
         }
-        if(chessboard[newCoord.Y][newCoord.X] < 0 && chessboard[oldCoord.Y][oldCoord.X] < 0){ // checks whether both pieces are black
-            //System.out.println("both are black");
-            return false;
-        }
-
         return true;
     }
     public Coord getOriginalSquare(){
@@ -96,45 +87,49 @@ public class Move {
         }
         return true;
     }
-    public boolean canKingBeCapturedAfterThisMove(Move move, int[][] ChessBoard, int color){
-        int[][] newChessBoard = new int[8][8];
-        copyArrays(newChessBoard, ChessBoard);
-        newChessBoard[move.getNewSquare().Y][move.getNewSquare().X] = newChessBoard[move.getOriginalSquare().Y][move.getOriginalSquare().X];
-        newChessBoard[move.getOriginalSquare().Y][move.getOriginalSquare().X] = 0;
+    public boolean canKingBeCapturedAfterThisMove(int[][] newChessBoard, int color){
+        int captured = newChessBoard[getNewSquare().Y][getNewSquare().X];
+        makeMove(newChessBoard);
         Coord kingPos = getKingPos(newChessBoard, color);
         try {
-            if (newChessBoard[kingPos.Y - color][kingPos.X + color] == -100 * color) {
-                return true;
-            }
-        }catch(Exception e){
-            //System.out.println(e);
-        }
-        try {
-            if (newChessBoard[kingPos.Y - color][kingPos.X - color] == -100 * color) {
+            if (newChessBoard[kingPos.Y - color][kingPos.X + color] == -100 * color || newChessBoard[kingPos.Y - color][kingPos.X - color] == -100 * color) {
+                newChessBoard[getOriginalSquare().Y][getOriginalSquare().X] = newChessBoard[getNewSquare().Y][getNewSquare().X];
+                newChessBoard[getNewSquare().Y][getNewSquare().X] = captured;
                 return true;
             }
         }catch(Exception e){}
         for(Move current: new knight(kingPos.X, kingPos.Y, color).getPseudoMoves(newChessBoard)){
             if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -300*color){
+                newChessBoard[getOriginalSquare().Y][getOriginalSquare().X] = newChessBoard[getNewSquare().Y][getNewSquare().X];
+                newChessBoard[getNewSquare().Y][getNewSquare().X] = captured;
                 return true;
             }
         }
         for(Move current: new bishop(kingPos.X, kingPos.Y, color).getPseudoMoves(newChessBoard)){
             if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -350*color || newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -900*color){
+                newChessBoard[getOriginalSquare().Y][getOriginalSquare().X] = newChessBoard[getNewSquare().Y][getNewSquare().X];
+                newChessBoard[getNewSquare().Y][getNewSquare().X] = captured;
                 return true;
             }
         }
         for(Move current: new rook(kingPos.X, kingPos.Y, color).getPseudoMoves(newChessBoard)){
             if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -500*color || newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -900*color){
+                newChessBoard[getOriginalSquare().Y][getOriginalSquare().X] = newChessBoard[getNewSquare().Y][getNewSquare().X];
+                newChessBoard[getNewSquare().Y][getNewSquare().X] = captured;
                 return true;
             }
         }
         for(Move current: new king(kingPos.X, kingPos.Y, color).getPseudoMoves(newChessBoard)){
             if(newChessBoard[current.getNewSquare().Y][current.getNewSquare().X] == -10000*color){
+                newChessBoard[getOriginalSquare().Y][getOriginalSquare().X] = newChessBoard[getNewSquare().Y][getNewSquare().X];
+                newChessBoard[getNewSquare().Y][getNewSquare().X] = captured;
                 return true;
             }
         }
+        newChessBoard[getOriginalSquare().Y][getOriginalSquare().X] = newChessBoard[getNewSquare().Y][getNewSquare().X];
+        newChessBoard[getNewSquare().Y][getNewSquare().X] = captured;
         return false;
+
     }
     public Coord getKingPos(int[][] chessboard, int color){
         for(int i = 0; i < chessboard.length; i++) {

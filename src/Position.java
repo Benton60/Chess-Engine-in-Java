@@ -176,7 +176,7 @@ public class Position{
     }
     public boolean kingIsInCheck(){
         Move move = new Move(new Coord(0,0), new Coord(0,0));
-        return move.canKingBeCapturedAfterThisMove(move,chessboard, col);
+        return move.canKingBeCapturedAfterThisMove(chessboard, col);
     }
     public ArrayList<Move> getAllCaptureMoves(){
         ArrayList<Move> totalMoves = new ArrayList<>();
