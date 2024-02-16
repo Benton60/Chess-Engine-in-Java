@@ -1,28 +1,11 @@
 
-import javax.swing.*;
-        import java.awt.*;
+import java.awt.*;
         import java.awt.image.BufferedImage;
         import java.util.ArrayList;
-        import java.util.Arrays;
         import java.util.HashMap;
 import java.util.Scanner;
 
 public class API implements Runnable {
-    public static JFrame frame = new JFrame();
-    public static JPanel panel = new JPanel() {
-        @Override
-        public void paint(Graphics g) {
-            g.setColor(Color.white);
-            g.fillRect(0, 0, 500, 500);
-            g.setColor(Color.black);
-            g.drawString("Time: " + (System.nanoTime()-time)/1000000000,10,20);
-            for(int i = 1; i <= 8; i++){
-                for(int j = 1; j <= 8; j++){
-                    g.drawString(Integer.toString(chessboard[j-1][i-1]),i*20, j*20+50);
-                }
-            }
-        }
-    };
     public static int chess_Board_X_Value = 95; //This is the top right X point of the chess board and is used to calculate
     //piece positions and where to move the mouse.
     public static int chess_Board_Y_Value = 188; //This is the top right Y point of the chess board and is used to calculate
@@ -40,10 +23,8 @@ public class API implements Runnable {
     private static boolean areWhite = true;
     public static Position[] lastPositions = new Position[5];
 
-
     public void run(){
         addPiecePixelValues();
-        setUpOutPutWindow();
         Scanner scan = new Scanner(System.in);
         scan.nextLine();
         checkForPieces(oldChessboard);
@@ -136,21 +117,6 @@ public class API implements Runnable {
         lastPositions[3] = new Position();
         lastPositions[4] = new Position();
     }
-    public static void setUpOutPutWindow(){
-        JFrame frame = new JFrame();
-        frame.setBounds(1000, 10, 500, 500);
-        frame.setDefaultCloseOperation(3);
-        frame.add(panel);
-        frame.setVisible(true);
-    }
-    public static void printChessBoard(int[][] board){
-        for (int[] strings : board) {
-            for (int string : strings) {
-                System.out.print(string + " ");
-            }
-            System.out.println();
-        }
-    }
     public static void copyArrays(int[][] one, int[][] two){
         for(int i = 0; i < two.length; i++){
             for(int j = 0; j < two[i].length; j++) {
@@ -221,8 +187,6 @@ public class API implements Runnable {
         }
     }
     public static void startEngine(){
-        panel.repaint();
-        frame.repaint();
         int[][] posBoard = new int[8][8];
         copyArrays(posBoard, chessboard);
         Position pos = new Position(posBoard,1, getLastMove(oldChessboard, chessboard), canCastleL, canCastleS, bCanCastleL, bCanCastleS);
